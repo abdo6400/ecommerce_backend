@@ -33,5 +33,14 @@ jobs:
     - name: Publish the project
       run: dotnet publish --configuration Release --output ./output
 
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: '<your-app-service-name>' # Replace with your Azure App Service name
+        slot-name: 'production' # or 'staging' if using deployment slots
+        publish-profile: ${{ secrets.AZURE_CREDENTIALS }}
+        package: ./output
+
+
 
 
