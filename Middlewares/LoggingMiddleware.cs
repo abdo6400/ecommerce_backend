@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Localization;
 
 namespace api.Middlewares
 {
@@ -9,6 +10,8 @@ namespace api.Middlewares
     {
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
+
+            _logger.LogInformation("Request: {Method} {Path}", context.Request.Method, context.Request.Path);
             // Log request information
             _logger.LogInformation("Incoming request: {Method} {Path}", context.Request.Method, context.Request.Path);
 

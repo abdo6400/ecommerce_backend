@@ -16,8 +16,10 @@ namespace api.Mappers
             return new ExtraInformationDto
             {
                 Id = extraInformation.Id,
-                Value = extraInformation.Value,
-                Name = extraInformation.Name
+                ValueEn = extraInformation.ValueEn,
+                NameEn = extraInformation.NameEn,
+                ValueAr = extraInformation.ValueAr,
+                NameAr = extraInformation.NameAr
             };
         }
 

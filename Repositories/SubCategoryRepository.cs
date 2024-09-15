@@ -47,7 +47,8 @@ namespace api.Repositories
             {
                 return null;
             }
-            subCategoryExist.Name = subCategory.Name;
+            subCategoryExist.NameEn = subCategory.NameEn;
+            subCategoryExist.NameAr = subCategory.NameAr;
             subCategoryExist.Image = subCategory.Image;
             await _context.SaveChangesAsync();
             return subCategoryExist;

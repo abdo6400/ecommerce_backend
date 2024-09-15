@@ -1,0 +1,22 @@
+{
+  "productNotFound": "المنتج غير موجود.",
+  "idNotMatch": "معرف غير متطابق.",
+  "subCategoryNotFound": "الفئة الفرعية غير موجودة.",
+  "subCategoryNotCreated": "تعذر إنشاء الفئة الفرعية.",
+  "categoryNotFound": "الفئة غير موجودة.",
+  "categoryAlreadyExists": "الفئة موجودة بالفعل.",
+  "brandNotFound": "العلامة التجارية غير موجودة.",
+  "brandCannotBeCreated": "تعذر إنشاء العلامة التجارية.",
+  "cartNotCreated": "تعذر إنشاء السلة.",
+  "cartCreated": "تم إنشاء السلة بنجاح.",
+  "cartNotFound": "السلة غير موجودة.",
+  "emailAlreadyExist": "البريد الإلكتروني موجود بالفعل.",
+  "userUnauthorized": "المستخدم غير مصرح له.",
+  "emailOrPasswordWrong": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+  "ServerError": "خطأ في الخادم.",
+  "somethingWentWrong": "حدث خطأ ما.",
+  "productNotCreated": "تعذر إنشاء المنتج.",
+  "emailNotRegistered": "البريد الإلكتروني غير مسجل.",
+  "wishlistNotFound": "المفضلة غير موجودة.",
+  "failedToCreateWishlist": "تعذر إنشاء المفضلة."
+}

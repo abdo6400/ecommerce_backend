@@ -14,8 +14,10 @@ namespace api.Mappers
             return new ProductDto
             {
                 Id = product.Id,
-                Title = product.Title,
-                Description = product.Description,
+                TitleEn = product.TitleEn,
+                DescriptionEn = product.DescriptionEn,
+                TitleAr = product.TitleAr,
+                DescriptionAr = product.DescriptionAr,
                 Sku = product.Sku,
                 Price = product.Price,
                 Stock = product.Stock,
@@ -32,8 +34,10 @@ namespace api.Mappers
             return new ProductByIdDto
             {
                 Id = product.Id,
-                Title = product.Title,
-                Description = product.Description,
+                TitleEn = product.TitleEn,
+                DescriptionEn = product.DescriptionEn,
+                TitleAr = product.TitleAr,
+                DescriptionAr = product.DescriptionAr,
                 Sku = product.Sku,
                 Price = product.Price,
                 Stock = product.Stock,
@@ -53,8 +57,10 @@ namespace api.Mappers
         {
             return new Product
             {
-                Title = productDto.Title,
-                Description = productDto.Description,
+                TitleEn = productDto.TitleEn,
+                DescriptionEn = productDto.DescriptionEn,
+                TitleAr = productDto.TitleAr,
+                DescriptionAr = productDto.DescriptionAr,
                 Price = productDto.Price,
                 Sku = productDto.Sku,
                 Stock = productDto.Stock,
@@ -73,12 +79,34 @@ namespace api.Mappers
             return new Product
             {
                 Id = id,
-                Title = productDto.Title,
-                Description = productDto.Description,
+                TitleEn = productDto.TitleEn,
+                DescriptionEn = productDto.DescriptionEn,
+                TitleAr = productDto.TitleAr,
+                DescriptionAr = productDto.DescriptionAr,
                 Price = productDto.Price,
                 Stock = productDto.Stock,
                 BrandId = productDto.BrandId,
                 Images = images,
+                Sku = productDto.Sku,
+                MinimumOrderQuantity = productDto.MinimumOrderQuantity,
+                DiscountPercentage = productDto.DiscountPercentage,
+                Product_Unit = productDto.Product_Unit,
+            };
+        }
+
+        public static Product ToProductFromCreateRequestJsonDto(this ProductJsonCreateRequestDto productDto)
+        {
+
+            return new Product
+            {
+                TitleEn = productDto.TitleEn,
+                DescriptionEn = productDto.DescriptionEn,
+                TitleAr = productDto.TitleAr,
+                DescriptionAr = productDto.DescriptionAr,
+                Price = productDto.Price,
+                Stock = productDto.Stock,
+                BrandId = productDto.BrandId,
+                Images = productDto.Images,
                 Sku = productDto.Sku,
                 MinimumOrderQuantity = productDto.MinimumOrderQuantity,
                 DiscountPercentage = productDto.DiscountPercentage,

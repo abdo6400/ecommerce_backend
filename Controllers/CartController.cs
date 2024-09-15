@@ -1,28 +1,34 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using api.Dtos.Cart;
 using api.Interfaces;
 using api.Mappers;
 using api.Models;
+using api.Resources;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace api.Controllers
 {
     [ApiController]
     [Route("api/carts")]
-    public class CartController(ICartRepository _cartRepository) : ControllerBase
+    [Authorize(Roles = "User")]
+    public class CartController(ICartRepository cartRepository, IStringLocalizer<CartController> localizer) : ControllerBase
     {
-
+        private readonly ICartRepository _cartRepository = cartRepository;
+        private readonly IStringLocalizer<CartController> _localizer = localizer;
 
         [HttpGet]
         public async Task<ActionResult<List<CartDto>>> GetAll()
         {
-            var carts = await _cartRepository.GetAllAsync();
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var carts = await _cartRepository.GetAllAsync(userId);
             return Ok(carts.Select(x => x.ToCartDto()).ToList());
         }
-
 
         [HttpPost]
         public async Task<ActionResult<CartDto>> CreateCart(CartCreateRequestDto cartDto)
@@ -31,40 +37,47 @@ namespace api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var cart = cartDto.ToCartFromCreateRequestDto();
-            var createCart = await _cartRepository.CreateCartAsync(cart);
-            if (createCart == null)
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var cart = cartDto.ToCartFromCreateRequestDto(userId);
+            var createdCart = await _cartRepository.CreateCartAsync(cart);
+
+            if (createdCart == null)
             {
-                return BadRequest("Can not create cart");
+                return BadRequest(_localizer.GetString(AppStrings.cartNotCreated));
             }
-            return Ok("Cart created successfully");
+
+            return Ok(createdCart.ToCartDto());
         }
 
-        [HttpPut]
-        [Route("{id:int}")]
+        [HttpPut("{id:int}")]
         public async Task<ActionResult<CartDto>> UpdateCart(int id, CartUpdateRequestDto cartDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var cart = cartDto.ToCartFromUpdateRequestDto(id);
-            var updateCart = await _cartRepository.UpdateCartAsync(cart);
-            if (updateCart == null)
+            var updatedCart = await _cartRepository.UpdateCartAsync(cart);
+
+            if (updatedCart == null)
             {
-                return NotFound("Cart not found");
+                return NotFound(_localizer.GetString(AppStrings.cartNotFound));
             }
-            return Ok(cart.ToCartDto());
+
+            return Ok(updatedCart.ToCartDto());
         }
-        [HttpDelete]
-        [Route("{id:int}")]
+
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult<CartDto>> DeleteCart(int id)
         {
             var cart = await _cartRepository.DeleteCartAsync(id);
+
             if (cart == null)
             {
-                return NotFound("Cart not found");
+                return NotFound(_localizer.GetString(AppStrings.cartNotFound));
             }
+
             return Ok(cart.ToCartDto());
         }
     }

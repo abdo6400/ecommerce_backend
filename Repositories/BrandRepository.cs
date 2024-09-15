@@ -49,7 +49,8 @@ namespace api.Repositories
             {
                 return null;
             }
-            brandExist.Name = brand.Name;
+            brandExist.NameAr = brand.NameAr;
+            brandExist.NameEn = brand.NameEn;
             brandExist.Image = brand.Image;
             await _context.SaveChangesAsync();
             return brandExist;

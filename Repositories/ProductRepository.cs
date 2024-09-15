@@ -80,7 +80,17 @@ namespace api.Repositories
                     .ToListAsync();
             }
 
-            return recommendedProducts;
+            if (recommendedProducts.Any())
+            {
+                return recommendedProducts;
+            }
+
+            var randomProducts = await _context.Products
+               .OrderBy(p => Guid.NewGuid()) // Random order
+                .Take(limit)
+                .ToListAsync();
+
+            return randomProducts;
         }
 
         public async Task<List<Product>> GetRelatedProductsAsync(int id, int subCategoryId)
@@ -153,8 +163,11 @@ namespace api.Repositories
             {
                 return null;
             }
-            productExist.Title = product.Title;
-            productExist.Description = product.Description;
+            productExist.TitleEn = product.TitleEn;
+            productExist.DescriptionEn = product.DescriptionEn;
+            productExist.TitleAr = product.TitleAr;
+            productExist.DescriptionAr = product.DescriptionAr;
+
             productExist.Price = product.Price;
             productExist.Stock = product.Stock;
             productExist.BrandId = product.BrandId;

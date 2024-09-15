@@ -10,7 +10,9 @@ namespace api.Models
 
         public int Id { get; set; }
         public string Image { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
+        public string NameEn { get; set; } = string.Empty;
+
+        public string NameAr { get; set; } = string.Empty;
         public int SubCategoryId { get; set; }
         // Navigation property to link products
         public SubCategory SubCategory { get; set; } = null!;

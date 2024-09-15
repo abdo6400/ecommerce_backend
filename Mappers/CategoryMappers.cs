@@ -15,7 +15,8 @@ namespace api.Mappers
             return new CategoryByIdDto
             {
                 Id = category.Id,
-                Name = category.Name,
+                NameEn = category.NameEn,
+                NameAr = category.NameAr,
                 Image = category.Image,
                 SubCategories = category.SubCategories.Select(x => x.ToSubCategoryByIdDto()).ToList()
             };
@@ -25,7 +26,8 @@ namespace api.Mappers
             return new CategoryDto
             {
                 Id = category.Id,
-                Name = category.Name,
+                NameEn = category.NameEn,
+                NameAr = category.NameAr,
                 Image = category.Image,
             };
         }
@@ -35,7 +37,8 @@ namespace api.Mappers
         {
             return new Category
             {
-                Name = categoryCreateRequestDto.Name,
+                NameEn = categoryCreateRequestDto.NameEn,
+                NameAr = categoryCreateRequestDto.NameAr,
                 Image = image
             };
         }
@@ -46,10 +49,22 @@ namespace api.Mappers
             return new Category
             {
                 Id = id,
-                Name = categoryUpdateRequestDto.Name,
+                NameEn = categoryUpdateRequestDto.NameEn,
+                NameAr = categoryUpdateRequestDto.NameAr,
                 Image = image
 
             };
         }
+        public static Category ToCategoryFromCreateRequestJsonDto(this CategoryJsonCreateRequestDto categoryJsonCreateRequestDto)
+        {
+            return new Category
+            {
+                NameEn = categoryJsonCreateRequestDto.NameEn,
+                NameAr = categoryJsonCreateRequestDto.NameAr,
+                Image = categoryJsonCreateRequestDto.Image
+
+            };
+        }
+
     }
 }

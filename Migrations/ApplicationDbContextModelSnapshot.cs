@@ -51,13 +51,13 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d8eeabcb-5d76-49ef-b318-9ec3891cbe0a",
+                            Id = "036273b2-7bcf-4ffd-ada6-2b218efc06b3",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "23621815-8139-45f6-b395-c2683ed52591",
+                            Id = "a5725128-e383-4b5a-9ba5-40c03c1680d7",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -300,7 +300,11 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("NameAr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameEn")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -312,6 +316,24 @@ namespace api.Migrations
                     b.HasIndex("SubCategoryId");
 
                     b.ToTable("Brands");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            Image = "https://picsum.photos/640/480/?image=322",
+                            NameAr = "??????? ???????? A",
+                            NameEn = "Brand A",
+                            SubCategoryId = -1
+                        },
+                        new
+                        {
+                            Id = -2,
+                            Image = "https://picsum.photos/640/480/?image=1080",
+                            NameAr = "??????? ???????? B",
+                            NameEn = "Brand B",
+                            SubCategoryId = -2
+                        });
                 });
 
             modelBuilder.Entity("api.Models.Cart", b =>
@@ -322,21 +344,21 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ProductID")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserID")
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductID");
+                    b.HasIndex("ProductId");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Carts");
                 });
@@ -353,13 +375,33 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("NameAr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameEn")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            Image = "https://picsum.photos/640/480/?image=1068",
+                            NameAr = "????????????",
+                            NameEn = "Electronics"
+                        },
+                        new
+                        {
+                            Id = -2,
+                            Image = "https://picsum.photos/640/480/?image=130",
+                            NameAr = "???????",
+                            NameEn = "Clothing"
+                        });
                 });
 
             modelBuilder.Entity("api.Models.Coupon", b =>
@@ -433,14 +475,22 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("NameAr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameEn")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Value")
+                    b.Property<string>("ValueAr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ValueEn")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -462,7 +512,11 @@ namespace api.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("DescriptionAr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DescriptionEn")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -473,7 +527,11 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("NameAr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameEn")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -509,8 +567,8 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("TotalAmount")
+                        .HasColumnType("float");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -540,8 +598,8 @@ namespace api.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -569,7 +627,11 @@ namespace api.Migrations
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("DescriptionAr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DescriptionEn")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -597,7 +659,11 @@ namespace api.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("TitleAr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TitleEn")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -606,6 +672,40 @@ namespace api.Migrations
                     b.HasIndex("BrandId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            BrandId = -1,
+                            DescriptionAr = "???? ???? ?????? ?????",
+                            DescriptionEn = "Latest model smartphone",
+                            DiscountPercentage = 10.0,
+                            Images = "[\"https://picsum.photos/640/480/?image=346\"]",
+                            MinimumOrderQuantity = 1,
+                            Price = 699.99000000000001,
+                            Product_Unit = "Unit",
+                            Sku = "8563186523074",
+                            Stock = 50,
+                            TitleAr = "???? ???",
+                            TitleEn = "Smartphone"
+                        },
+                        new
+                        {
+                            Id = -2,
+                            BrandId = -2,
+                            DescriptionAr = "????? ????? ???? ??????",
+                            DescriptionEn = "High performance laptop",
+                            DiscountPercentage = 15.0,
+                            Images = "[\"https://picsum.photos/640/480/?image=745\"]",
+                            MinimumOrderQuantity = 1,
+                            Price = 999.99000000000001,
+                            Product_Unit = "Unit",
+                            Sku = "7945507179923",
+                            Stock = 30,
+                            TitleAr = "????? ?????",
+                            TitleEn = "Laptop"
+                        });
                 });
 
             modelBuilder.Entity("api.Models.Review", b =>
@@ -657,7 +757,11 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("NameAr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameEn")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -666,6 +770,40 @@ namespace api.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("SubCategories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            CategoryId = -1,
+                            Image = "https://picsum.photos/640/480/?image=1035",
+                            NameAr = "??????? ????????",
+                            NameEn = "Mobile Phones"
+                        },
+                        new
+                        {
+                            Id = -2,
+                            CategoryId = -1,
+                            Image = "https://picsum.photos/640/480/?image=217",
+                            NameAr = "????? ????????? ????????",
+                            NameEn = "Laptops"
+                        },
+                        new
+                        {
+                            Id = -3,
+                            CategoryId = -2,
+                            Image = "https://picsum.photos/640/480/?image=1056",
+                            NameAr = "????? ??????",
+                            NameEn = "Men's Wear"
+                        },
+                        new
+                        {
+                            Id = -4,
+                            CategoryId = -2,
+                            Image = "https://picsum.photos/640/480/?image=860",
+                            NameAr = "????? ??????",
+                            NameEn = "Women's Wear"
+                        });
                 });
 
             modelBuilder.Entity("api.Models.Wishlist", b =>
@@ -769,13 +907,13 @@ namespace api.Migrations
                 {
                     b.HasOne("api.Models.Product", "Product")
                         .WithMany("Carts")
-                        .HasForeignKey("ProductID")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("api.Models.AppUser", "User")
                         .WithMany("Carts")
-                        .HasForeignKey("UserID")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

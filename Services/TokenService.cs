@@ -23,12 +23,14 @@ namespace api.Services
             _config = config;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SiginKey"]!));
         }
-        public string CreateToken(AppUser user)
+        public string CreateToken(AppUser user, string role )
         {
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-                new Claim(JwtRegisteredClaimNames.GivenName, user.UserName!)
+                new Claim(JwtRegisteredClaimNames.GivenName, user.UserName!),
+                new Claim(ClaimTypes.Role, role),
+                new Claim(ClaimTypes.NameIdentifier, user.Id!)
             };
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
@@ -39,7 +41,7 @@ namespace api.Services
                 Expires = DateTime.Now.AddDays(7),
                 SigningCredentials = creds,
                 Issuer = _config["JWT:Issuer"],
-                Audience = _config["JWT:Audience"]
+                Audience = _config["JWT:Audience"],
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -48,7 +50,7 @@ namespace api.Services
             return tokenHandler.WriteToken(token);
         }
 
-        
+
     }
 
 }

@@ -49,7 +49,8 @@ namespace api.Repositories
             {
                 return null;
             }
-            categoryExist.Name = category.Name;
+            categoryExist.NameEn = category.NameEn;
+            categoryExist.NameAr = category.NameAr;
             categoryExist.Image = category.Image;
             await _context.SaveChangesAsync();
             return categoryExist;

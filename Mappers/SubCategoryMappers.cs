@@ -10,11 +10,13 @@ namespace api.Mappers
     public static class SubCategoryMappers
     {
 
-        public static SubCategoryByIdDto ToSubCategoryByIdDto(this SubCategory subCategory){
+        public static SubCategoryByIdDto ToSubCategoryByIdDto(this SubCategory subCategory)
+        {
             return new SubCategoryByIdDto
             {
                 Id = subCategory.Id,
-                Name = subCategory.Name,
+                NameEn = subCategory.NameEn,
+                NameAr = subCategory.NameAr,
                 Image = subCategory.Image,
                 Brands = subCategory.Brands.Select(x => x.ToBrandByIdDto()).ToList()
             };
@@ -24,7 +26,8 @@ namespace api.Mappers
             return new SubCategoryDto
             {
                 Id = subCategory.Id,
-                Name = subCategory.Name,
+                NameEn = subCategory.NameEn,
+                NameAr = subCategory.NameAr,
                 Image = subCategory.Image
             };
         }
@@ -33,7 +36,8 @@ namespace api.Mappers
         {
             return new SubCategory
             {
-                Name = subCategoryCreateRequestDto.Name,
+                NameEn = subCategoryCreateRequestDto.NameEn,
+                NameAr = subCategoryCreateRequestDto.NameAr,
                 Image = image,
                 CategoryId = subCategoryCreateRequestDto.CategoryId
             };
@@ -45,9 +49,22 @@ namespace api.Mappers
             return new SubCategory
             {
                 Id = id,
-                Name = subCategoryUpdateRequestDto.Name,
+                NameEn = subCategoryUpdateRequestDto.NameEn,
+                NameAr = subCategoryUpdateRequestDto.NameAr,
                 Image = image,
                 CategoryId = subCategoryUpdateRequestDto.CategoryId
+            };
+        }
+
+        public static SubCategory ToSubCategoryFromCreateRequestJsonDto(this SubCategoryJsonCreateRequestDto subCategoryJsonCreateRequestDto)
+        {
+            return new SubCategory
+            {
+
+                NameEn = subCategoryJsonCreateRequestDto.NameEn,
+                NameAr = subCategoryJsonCreateRequestDto.NameAr,
+                Image = subCategoryJsonCreateRequestDto.Image,
+                CategoryId = subCategoryJsonCreateRequestDto.CategoryId
             };
         }
 

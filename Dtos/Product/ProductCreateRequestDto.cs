@@ -9,8 +9,11 @@ namespace api.Dtos.Product
 {
     public class ProductCreateRequestDto
     {
-        public string Title { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        public string TitleEn { get; set; } = string.Empty;
+        public string DescriptionEn { get; set; } = string.Empty;
+
+            public string TitleAr { get; set; } = string.Empty;
+        public string DescriptionAr { get; set; } = string.Empty;
         public string Sku { get; set; } = string.Empty;
         public double Price { get; set; }
         public int Stock { get; set; }

@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "Js6yY/0sPFhOYtoxW90zS4Xk/2xkNZUFdAbZJe4TSzY=",
+  "Source": "api",
+  "BasePath": "_content/api",
+  "Mode": "Default",
+  "ManifestType": "Publish",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "api\\wwwroot",
+      "Source": "api",
+      "ContentRoot": "D:\\backend\\ecommerce\\api\\wwwroot\\",
+      "BasePath": "_content/api",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}

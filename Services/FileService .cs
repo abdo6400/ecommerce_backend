@@ -98,6 +98,24 @@ namespace api.Services
 
             return savedFilePaths;
         }
+        public async Task<string> SaveJsonToFileAsync(string jsonContent, string folderName, string fileName)
+        {
+            // Ensure the target directory exists
+            var directoryPath = Path.Combine(_baseDirectory, folderName);
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
 
+            // Generate a unique file name with the .json extension
+            var uniqueFileName = fileName + ".json";
+            var filePath = Path.Combine(directoryPath, uniqueFileName);
+
+            // Write the JSON content to the file
+            await File.WriteAllTextAsync(filePath, jsonContent);
+
+            // Return the relative file path
+            return Path.Combine(folderName, uniqueFileName).Replace("\\", "/");
+        }
     }
 }

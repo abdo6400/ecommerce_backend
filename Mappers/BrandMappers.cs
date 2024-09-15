@@ -16,7 +16,8 @@ namespace api.Mappers
             return new BrandByIdDto
             {
                 Id = brand.Id,
-                Name = brand.Name,
+                NameAr = brand.NameAr,
+                NameEn = brand.NameEn,
                 Image = brand.Image,
                 Products = brand.Products.Select(x => x.ToProductDto()).ToList(),
             };
@@ -27,7 +28,8 @@ namespace api.Mappers
             return new BrandDto
             {
                 Id = brand.Id,
-                Name = brand.Name,
+                NameAr = brand.NameAr,
+                NameEn = brand.NameEn,
                 Image = brand.Image,
             };
         }
@@ -37,7 +39,8 @@ namespace api.Mappers
         {
             return new Brand
             {
-                Name = brand.Name,
+                NameAr = brand.NameAr,
+                NameEn = brand.NameEn,
                 Image = image,
                 SubCategoryId = brand.SubCategoryId
             };
@@ -49,9 +52,21 @@ namespace api.Mappers
             return new Brand
             {
                 Id = id,
-                Name = brand.Name,
+                NameAr = brand.NameAr,
+                NameEn = brand.NameEn,
                 Image = image,
                 SubCategoryId = brand.SubCategoryId
+            };
+        }
+
+        public static Brand ToBrandFromCreateRequestJsonDto(this BrandJsonCreateRequestDto brandJsonCreateRequestDto)
+        {
+            return new Brand
+            {
+                NameAr = brandJsonCreateRequestDto.NameAr,
+                NameEn = brandJsonCreateRequestDto.NameEn,
+                Image = brandJsonCreateRequestDto.Image,
+                SubCategoryId = brandJsonCreateRequestDto.SubCategoryId
             };
         }
 

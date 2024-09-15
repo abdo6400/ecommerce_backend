@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Models;
+using Bogus;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -63,12 +64,12 @@ namespace api.Data
             modelBuilder.Entity<Cart>()
                 .HasOne(c => c.User)
                 .WithMany(u => u.Carts)
-                .HasForeignKey(c => c.UserID);
+                .HasForeignKey(c => c.UserId);
 
             modelBuilder.Entity<Cart>()
                 .HasOne(c => c.Product)
                 .WithMany(p => p.Carts)
-                .HasForeignKey(c => c.ProductID);
+                .HasForeignKey(c => c.ProductId);
 
             //Review
             modelBuilder.Entity<Review>()
@@ -158,5 +159,7 @@ namespace api.Data
             modelBuilder.Entity<IdentityRole>().HasData(identityRoles);
 
         }
+
+
     }
 }

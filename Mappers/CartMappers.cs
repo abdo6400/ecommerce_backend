@@ -21,12 +21,12 @@ namespace api.Mappers
         }
 
 
-        public static Cart ToCartFromCreateRequestDto(this CartCreateRequestDto cartDto)
+        public static Cart ToCartFromCreateRequestDto(this CartCreateRequestDto cartDto,string userId)
         {
             return new Cart
             {
-                UserID = cartDto.UserID,
-                ProductID = cartDto.ProductID,
+                UserId = userId,
+                ProductId = cartDto.ProductID,
                 Quantity = cartDto.Quantity
             };
         }

@@ -9,12 +9,13 @@ namespace api.Models
     {
         public int Id { get; set; }
         public DateTime OrderDate { get; set; }
-        public decimal TotalAmount { get; set; }
+        public double TotalAmount { get; set; }
         public string OrderStatus { get; set; } = "Pending";
-        public string UserId { get; set; } = null!;
         public int? CouponId { get; set; }
         public int AddressId { get; set; }
 
+        public string UserId { get; set; } = null!;
+        
         // Navigation properties
         public Address Address { get; set; } = null!;
         public AppUser User { get; set; } = null!;

@@ -50,6 +50,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Azure.Identity": {
+              "target": "Package",
+              "version": "[1.12.0, )"
+            },
+            "Bogus": {
+              "target": "Package",
+              "version": "[35.6.1, )"
+            },
             "MailKit": {
               "target": "Package",
               "version": "[4.7.1.1, )"
@@ -67,6 +75,10 @@
               "version": "[8.0.8, )"
             },
             "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Client": {
               "target": "Package",
               "version": "[8.0.8, )"
             },
@@ -93,6 +105,10 @@
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
+            },
+            "Stripe.net": {
+              "target": "Package",
+              "version": "[45.13.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
