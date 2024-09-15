@@ -1,0 +1,46 @@
+name: Build, Test, and Deploy ASP.NET Core API to Azure
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x' # Specify your .NET Core version
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build the project
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Run tests
+      run: dotnet test --no-build --verbosity normal --configuration Release
+
+    - name: Publish the project
+      run: dotnet publish --configuration Release --output ./output
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: '<your-app-service-name>' # Replace with your Azure App Service name
+        slot-name: 'production' # or 'staging' if using deployment slots
+        publish-profile: ${{ secrets.AZURE_CREDENTIALS }}
+        package: ./output
+
+
+
+
