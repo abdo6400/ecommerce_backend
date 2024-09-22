@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using api.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
 namespace api.Services
@@ -16,18 +10,19 @@ namespace api.Services
         private readonly IConfiguration _config;
         private readonly SymmetricSecurityKey _key;
 
-
         public OtpService(IConfiguration config)
         {
-
             _config = config;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SiginKey"]!));
         }
+
         public string CreateOtpSecret(string email, string otp)
         {
+            var encryptedOtp = EncryptionHelper.Encrypt(otp);
+
             var claims = new List<Claim>
             {
-                new(JwtRegisteredClaimNames.Sub, otp),
+                new(JwtRegisteredClaimNames.Sub, encryptedOtp),
                 new(JwtRegisteredClaimNames.Email, email),
             };
 
@@ -67,8 +62,11 @@ namespace api.Services
                 var jwtToken = (JwtSecurityToken)validatedToken;
 
                 // Extract the OTP and email from the token's claims
-                var tokenOtp = jwtToken.Claims.First(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+                var encryptedOtp = jwtToken.Claims.First(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
                 var tokenEmail = jwtToken.Claims.First(claim => claim.Type == JwtRegisteredClaimNames.Email).Value;
+
+                // Decrypt the OTP
+                var tokenOtp = EncryptionHelper.Decrypt(encryptedOtp);
 
                 // Ensure the token is not expired (additional check)
                 var expiration = jwtToken.ValidTo;
@@ -82,7 +80,6 @@ namespace api.Services
                 }
                 if (tokenOtp != otp)
                 {
-
                     return "Invalid OTP";
                 }
                 return null;
@@ -100,9 +97,8 @@ namespace api.Services
             {
                 return "An unexpected error occurred during OTP verification.";
             }
-
-
         }
+
         public string CreateOtpCode(int length = 4)
         {
             const string chars = "0123456789";
@@ -117,6 +113,46 @@ namespace api.Services
 
             return otp.ToString();
         }
+    }
 
+    public static class EncryptionHelper
+    {
+        // Replace these with your actual base64-encoded key and IV
+        private static readonly byte[] Key = Convert.FromBase64String("G8kDFaXhCjY/3M4kEkwA9FgM4WbU7xM7b6F3Q5Z3uFg=");
+        private static readonly byte[] Iv = Convert.FromBase64String("bH1zv6KNyKzj9V9Ih8z2hg==");
+
+        public static string Encrypt(string plainText)
+        {
+            using var aes = Aes.Create();
+            aes.Key = Key;
+            aes.IV = Iv;
+
+            var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+            using var memoryStream = new MemoryStream();
+            using var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write);
+            using var writer = new StreamWriter(cryptoStream);
+
+            writer.Write(plainText);
+            writer.Flush();
+            cryptoStream.FlushFinalBlock();
+
+            return Convert.ToBase64String(memoryStream.ToArray());
+        }
+
+        public static string Decrypt(string cipherText)
+        {
+            using var aes = Aes.Create();
+            aes.Key = Key;
+            aes.IV = Iv;
+
+            var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+            using var memoryStream = new MemoryStream(Convert.FromBase64String(cipherText));
+            using var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+            using var reader = new StreamReader(cryptoStream);
+
+            return reader.ReadToEnd();
+        }
     }
 }

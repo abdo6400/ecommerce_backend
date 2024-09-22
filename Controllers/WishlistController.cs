@@ -1,20 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using api.Dtos.Wishlist;
-using api.Interfaces;
-using api.Mappers;
-using api.Resources;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
 
 namespace api.Controllers
 {
     [ApiController]
     [Route("api/wishlist")]
     [Authorize(Roles = "User")]
+    [ApiExplorerSettings(GroupName = "v1-customer")]
     public class WishlistController : ControllerBase
     {
         private readonly IWishlistRepository _wishlistRepository;
@@ -41,7 +32,7 @@ namespace api.Controllers
             var wishlist = await _wishlistRepository.DeleteAsync(id);
             if (wishlist == null)
             {
-                return NotFound(_localizer[AppStrings.wishlistNotFound]);
+                return NotFound(_localizer[AppStrings.wishlistNotFound].Value);
             }
             return wishlist.ToWishlistDto();
         }
@@ -54,7 +45,7 @@ namespace api.Controllers
             var createdWishlist = await _wishlistRepository.CreateAsync(wishlist);
             if (createdWishlist == null)
             {
-                return BadRequest(_localizer[AppStrings.failedToCreateWishlist]);
+                return BadRequest(_localizer[AppStrings.failedToCreateWishlist].Value);
             }
             return createdWishlist.ToWishlistDto();
         }

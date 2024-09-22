@@ -1,14 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Dtos.Brand;
-using api.Interfaces;
-using api.Models;
-using api.Mappers;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
-using api.Resources;
-using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers
 {
@@ -22,6 +12,7 @@ namespace api.Controllers
         private readonly IStringLocalizer<BrandController> _localizer = localizer;
 
         [HttpGet]
+        [ApiExplorerSettings(GroupName = "v1-customer")]
         public async Task<ActionResult<List<BrandDto>>> GetAll()
         {
             var brands = await _brandRepository.GetAllAsync();
@@ -29,18 +20,20 @@ namespace api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [ApiExplorerSettings(GroupName = "v1-customer")]
         public async Task<ActionResult<BrandDto>> GetBrandById(int id)
         {
             var brand = await _brandRepository.GetBrandByIdAsync(id);
             if (brand == null)
             {
-                return NotFound(_localizer.GetString(AppStrings.brandNotFound));
+                return NotFound(_localizer.GetString(AppStrings.brandNotFound).Value);
             }
             return Ok(brand.ToBrandDto());
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         public async Task<ActionResult<BrandDto>> CreateBrand([FromForm] BrandCreateRequestDto brandDto)
         {
             if (!ModelState.IsValid)
@@ -55,7 +48,7 @@ namespace api.Controllers
 
             if (createdBrand == null)
             {
-                return BadRequest(_localizer.GetString(AppStrings.brandCannotBeCreated));
+                return BadRequest(_localizer.GetString(AppStrings.brandCannotBeCreated).Value);
             }
 
             return Ok(createdBrand.ToBrandDto());
@@ -64,6 +57,7 @@ namespace api.Controllers
 
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Admin")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         public async Task<ActionResult<BrandDto>> UpdateBrand(int id, [FromForm] BrandUpdateRequestDto brandDto)
         {
             if (!ModelState.IsValid)
@@ -78,7 +72,7 @@ namespace api.Controllers
 
             if (updatedBrand == null)
             {
-                return NotFound(_localizer.GetString(AppStrings.brandNotFound));
+                return NotFound(_localizer.GetString(AppStrings.brandNotFound).Value);
             }
 
             return Ok(updatedBrand.ToBrandDto());
@@ -88,13 +82,14 @@ namespace api.Controllers
 
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Admin")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         public async Task<ActionResult<BrandDto>> DeleteBrand(int id)
         {
 
             var brand = await _brandRepository.DeleteBrandAsync(id);
             if (brand == null)
             {
-                return NotFound(_localizer.GetString(AppStrings.brandNotFound));
+                return NotFound(_localizer.GetString(AppStrings.brandNotFound).Value);
             }
 
             _fileService.DeleteFile(brand.Image);
@@ -103,6 +98,7 @@ namespace api.Controllers
         }
 
         [HttpPost("bulk-create-brands")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         
         public async Task<ActionResult<List<BrandDto>>> CreateBrands([FromBody] List<BrandJsonCreateRequestDto> brandDtos)
         {
@@ -120,7 +116,7 @@ namespace api.Controllers
 
                 if (createdBrand == null)
                 {
-                    return BadRequest(_localizer.GetString(AppStrings.brandCannotBeCreated));
+                    return BadRequest(_localizer.GetString(AppStrings.brandCannotBeCreated).Value);
                 }
 
                 brandDtosList.Add(createdBrand.ToBrandDto());

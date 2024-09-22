@@ -18,5 +18,10 @@
   "productNotCreated": "Product could not be created.",
   "emailNotRegistered": "Email is not registered.",
   "wishlistNotFound": "Wishlist not found.",
-  "failedToCreateWishlist": "Wishlist could not be created."
+  "failedToCreateWishlist": "Wishlist could not be created.",
+  "addressNotCreated": "Address could not be created.",
+  "addressNotUpdated": "Address could not be updated.",
+  "couponNotFound": "Coupon not found.",
+  "couponNotCreated": "Coupon could not be created.",
+  "couponNotValid": "Coupon is not valid."
 }

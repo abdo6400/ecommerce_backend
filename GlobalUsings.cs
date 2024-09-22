@@ -1,0 +1,13 @@
+global using System.Threading.Tasks;
+global using api.Dtos.Account;
+global using api.Interfaces;
+global using api.Models;
+global using api.Resources;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Localization;
+global using System.Security.Claims;
+global using api.Mappers;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Js6yY/0sPFhOYtoxW90zS4Xk/2xkNZUFdAbZJe4TSzY=",
+  "Hash": "Ijkdm+UM8nQKRGu5At8OdJYR2Djdh1BvrudWb8eqLAw=",
   "Source": "api",
   "BasePath": "_content/api",
   "Mode": "Default",
@@ -15,5 +15,25 @@
       "Pattern": "**"
     }
   ],
-  "Assets": []
+  "Assets": [
+    {
+      "Identity": "D:\\backend\\ecommerce\\api\\wwwroot\\Templetes\\OtpTemplete.html",
+      "SourceId": "api",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\backend\\ecommerce\\api\\wwwroot\\",
+      "BasePath": "_content/api",
+      "RelativePath": "Templetes/OtpTemplete.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Templetes\\OtpTemplete.html"
+    }
+  ]
 }

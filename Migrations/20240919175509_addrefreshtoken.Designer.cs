@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240914064000_SeedData")]
-    partial class SeedData
+    [Migration("20240919175509_addrefreshtoken")]
+    partial class addrefreshtoken
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,15 +54,21 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b9023d04-f50d-40ae-92f6-03ee301dd38d",
+                            Id = "a986c269-27e6-4b07-924b-f47021fbebb4",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "eb99680c-e5fb-427d-90fa-4a7dbd98c71f",
+                            Id = "6752843c-6a78-4477-ab98-f592d7783dba",
                             Name = "User",
                             NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "1e0a030b-fe2f-4391-a3f4-08f94b2f2e64",
+                            Name = "DeliveryPerson",
+                            NormalizedName = "DELIVERYPERSON"
                         });
                 });
 
@@ -226,7 +232,7 @@ namespace api.Migrations
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("api.Models.AppUser", b =>
+            modelBuilder.Entity("api.Models.BaseUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -268,6 +274,12 @@ namespace api.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -289,6 +301,8 @@ namespace api.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("api.Models.Brand", b =>
@@ -381,28 +395,22 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CouponCode")
+                    b.Property<string>("ApplicableItems")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DiscountType")
+                    b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("DiscountValue")
+                    b.Property<double>("DiscountAmount")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("ExpirationDate")
+                    b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool>("IsPercentage")
                         .HasColumnType("bit");
-
-                    b.Property<int>("TimesUsed")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsageLimit")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -434,6 +442,38 @@ namespace api.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("CouponUsages");
+                });
+
+            modelBuilder.Entity("api.Models.Delivery", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DeliveryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeliveryPersonId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DeliveryStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DeliveryPersonId");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique()
+                        .HasFilter("[OrderId] IS NOT NULL");
+
+                    b.ToTable("Deliveries");
                 });
 
             modelBuilder.Entity("api.Models.ExtraInformation", b =>
@@ -520,13 +560,13 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AddressId1")
+                    b.Property<int?>("AddressId")
                         .HasColumnType("int");
 
                     b.Property<int?>("CouponId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DeliveryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("OrderDate")
@@ -535,6 +575,9 @@ namespace api.Migrations
                     b.Property<string>("OrderStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PaymentId")
+                        .HasColumnType("int");
 
                     b.Property<double>("TotalAmount")
                         .HasColumnType("float");
@@ -547,9 +590,17 @@ namespace api.Migrations
 
                     b.HasIndex("AddressId");
 
-                    b.HasIndex("AddressId1");
+                    b.HasIndex("CouponId")
+                        .IsUnique()
+                        .HasFilter("[CouponId] IS NOT NULL");
 
-                    b.HasIndex("CouponId");
+                    b.HasIndex("DeliveryId")
+                        .IsUnique()
+                        .HasFilter("[DeliveryId] IS NOT NULL");
+
+                    b.HasIndex("PaymentId")
+                        .IsUnique()
+                        .HasFilter("[PaymentId] IS NOT NULL");
 
                     b.HasIndex("UserId");
 
@@ -583,6 +634,39 @@ namespace api.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("api.Models.Payment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("AmountPaid")
+                        .HasColumnType("float");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TransactionId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("api.Models.Product", b =>
@@ -731,6 +815,27 @@ namespace api.Migrations
                     b.ToTable("Wishlists");
                 });
 
+            modelBuilder.Entity("api.Models.Admin", b =>
+                {
+                    b.HasBaseType("api.Models.BaseUser");
+
+                    b.ToTable("Admins", (string)null);
+                });
+
+            modelBuilder.Entity("api.Models.Customer", b =>
+                {
+                    b.HasBaseType("api.Models.BaseUser");
+
+                    b.ToTable("Customers", (string)null);
+                });
+
+            modelBuilder.Entity("api.Models.DeliveryPerson", b =>
+                {
+                    b.HasBaseType("api.Models.BaseUser");
+
+                    b.ToTable("DeliveryPersons", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -742,7 +847,7 @@ namespace api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("api.Models.AppUser", null)
+                    b.HasOne("api.Models.BaseUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -751,7 +856,7 @@ namespace api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("api.Models.AppUser", null)
+                    b.HasOne("api.Models.BaseUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -766,7 +871,7 @@ namespace api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api.Models.AppUser", null)
+                    b.HasOne("api.Models.BaseUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -775,7 +880,7 @@ namespace api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("api.Models.AppUser", null)
+                    b.HasOne("api.Models.BaseUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -784,7 +889,7 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Address", b =>
                 {
-                    b.HasOne("api.Models.AppUser", "User")
+                    b.HasOne("api.Models.Customer", "User")
                         .WithMany("Addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -798,7 +903,7 @@ namespace api.Migrations
                     b.HasOne("api.Models.SubCategory", "SubCategory")
                         .WithMany("Brands")
                         .HasForeignKey("SubCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("SubCategory");
@@ -812,7 +917,7 @@ namespace api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api.Models.AppUser", "User")
+                    b.HasOne("api.Models.Customer", "User")
                         .WithMany("Carts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -831,7 +936,7 @@ namespace api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api.Models.AppUser", "User")
+                    b.HasOne("api.Models.Customer", "User")
                         .WithMany("CouponUsages")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -840,6 +945,23 @@ namespace api.Migrations
                     b.Navigation("Coupon");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("api.Models.Delivery", b =>
+                {
+                    b.HasOne("api.Models.DeliveryPerson", "DeliveryPerson")
+                        .WithMany("Deliveries")
+                        .HasForeignKey("DeliveryPersonId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("api.Models.Order", "Order")
+                        .WithOne()
+                        .HasForeignKey("api.Models.Delivery", "OrderId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("DeliveryPerson");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("api.Models.ExtraInformation", b =>
@@ -856,29 +978,38 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Order", b =>
                 {
                     b.HasOne("api.Models.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.Address", null)
                         .WithMany("Orders")
-                        .HasForeignKey("AddressId1");
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("api.Models.Coupon", "Coupon")
-                        .WithMany()
-                        .HasForeignKey("CouponId")
+                        .WithOne()
+                        .HasForeignKey("api.Models.Order", "CouponId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("api.Models.AppUser", "User")
+                    b.HasOne("api.Models.Delivery", "Delivery")
+                        .WithOne()
+                        .HasForeignKey("api.Models.Order", "DeliveryId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("api.Models.Payment", "Payment")
+                        .WithOne()
+                        .HasForeignKey("api.Models.Order", "PaymentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("api.Models.Customer", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Address");
 
                     b.Navigation("Coupon");
+
+                    b.Navigation("Delivery");
+
+                    b.Navigation("Payment");
 
                     b.Navigation("User");
                 });
@@ -894,7 +1025,7 @@ namespace api.Migrations
                     b.HasOne("api.Models.Product", "Product")
                         .WithMany("OrderItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Order");
@@ -902,12 +1033,23 @@ namespace api.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("api.Models.Payment", b =>
+                {
+                    b.HasOne("api.Models.Order", "Order")
+                        .WithOne()
+                        .HasForeignKey("api.Models.Payment", "OrderId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("api.Models.Product", b =>
                 {
                     b.HasOne("api.Models.Brand", "Brand")
                         .WithMany("Products")
                         .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Brand");
@@ -921,7 +1063,7 @@ namespace api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api.Models.AppUser", "User")
+                    b.HasOne("api.Models.Customer", "User")
                         .WithMany("Reviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -937,7 +1079,7 @@ namespace api.Migrations
                     b.HasOne("api.Models.Category", "Category")
                         .WithMany("SubCategories")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -951,7 +1093,7 @@ namespace api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api.Models.AppUser", "User")
+                    b.HasOne("api.Models.Customer", "User")
                         .WithMany("Wishlists")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -962,24 +1104,36 @@ namespace api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("api.Models.Admin", b =>
+                {
+                    b.HasOne("api.Models.BaseUser", null)
+                        .WithOne()
+                        .HasForeignKey("api.Models.Admin", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Models.Customer", b =>
+                {
+                    b.HasOne("api.Models.BaseUser", null)
+                        .WithOne()
+                        .HasForeignKey("api.Models.Customer", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Models.DeliveryPerson", b =>
+                {
+                    b.HasOne("api.Models.BaseUser", null)
+                        .WithOne()
+                        .HasForeignKey("api.Models.DeliveryPerson", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("api.Models.Address", b =>
                 {
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("api.Models.AppUser", b =>
-                {
-                    b.Navigation("Addresses");
-
-                    b.Navigation("Carts");
-
-                    b.Navigation("CouponUsages");
-
-                    b.Navigation("Orders");
-
-                    b.Navigation("Reviews");
-
-                    b.Navigation("Wishlists");
                 });
 
             modelBuilder.Entity("api.Models.Brand", b =>
@@ -1018,6 +1172,26 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.SubCategory", b =>
                 {
                     b.Navigation("Brands");
+                });
+
+            modelBuilder.Entity("api.Models.Customer", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Carts");
+
+                    b.Navigation("CouponUsages");
+
+                    b.Navigation("Orders");
+
+                    b.Navigation("Reviews");
+
+                    b.Navigation("Wishlists");
+                });
+
+            modelBuilder.Entity("api.Models.DeliveryPerson", b =>
+                {
+                    b.Navigation("Deliveries");
                 });
 #pragma warning restore 612, 618
         }

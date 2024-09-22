@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using api.Dtos.Category;
-using api.Dtos.ExtraInformation;
-using api.Models;
-
 namespace api.Dtos.Product
 {
     public class ProductDto

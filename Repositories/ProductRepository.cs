@@ -1,12 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Data;
-using api.Interfaces;
-using api.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories
 {
@@ -80,7 +72,7 @@ namespace api.Repositories
                     .ToListAsync();
             }
 
-            if (recommendedProducts.Any())
+            if (recommendedProducts.Count != 0)
             {
                 return recommendedProducts;
             }
@@ -120,7 +112,7 @@ namespace api.Repositories
                     (p, prod) => prod)
                 .ToListAsync();
 
-            if (topRatedProducts.Any())
+            if (topRatedProducts.Count != 0)
             {
                 return topRatedProducts;
             }
@@ -141,7 +133,7 @@ namespace api.Repositories
                     (p, prod) => prod)
                 .ToListAsync();
 
-            if (topSellingProducts.Any())
+            if (topSellingProducts.Count != 0)
             {
                 return topSellingProducts;
             }

@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Localization;
-
 namespace api.Middlewares
 {
     public class LoggingMiddleware(ILogger<LoggingMiddleware> _logger) : IMiddleware

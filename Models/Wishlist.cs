@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace api.Models
 {
     public class Wishlist
@@ -12,7 +7,7 @@ namespace api.Models
         public int ProductId { get; set; }
 
         // Navigation properties
-        public AppUser User { get; set; } = null!;
+        public Customer User { get; set; } = null!;
         public Product Product { get; set; } = null!;
     }
 }

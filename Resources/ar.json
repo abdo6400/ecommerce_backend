@@ -18,5 +18,10 @@
   "productNotCreated": "تعذر إنشاء المنتج.",
   "emailNotRegistered": "البريد الإلكتروني غير مسجل.",
   "wishlistNotFound": "المفضلة غير موجودة.",
-  "failedToCreateWishlist": "تعذر إنشاء المفضلة."
+  "failedToCreateWishlist": "تعذر إنشاء المفضلة.",
+  "addressNotCreated": "تعذر إنشاء العنوان.",
+  "addressNotUpdated": "تعذر تحديث العنوان.",
+  "couponNotFound": "الكوبون غير موجود.",
+  "couponNotCreated": "تعذر إنشاء الكوبون.",
+  "couponNotValid": "الكوبون غير صالح للإستخدام."
 }

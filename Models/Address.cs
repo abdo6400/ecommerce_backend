@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace api.Models
 {
     public class Address
     {
-
         public int Id { get; set; }
         public string? ShippingName { get; set; }
         public string FullName { get; set; } = null!;
@@ -24,6 +18,6 @@ namespace api.Models
         // Navigation properties
         public List<Order> Orders { get; set; } = null!;
 
-        public AppUser User { get; set; } = null!;
+        public Customer User { get; set; } = null!;
     }
 }

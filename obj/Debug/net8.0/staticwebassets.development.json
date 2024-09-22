@@ -1,1 +1,1 @@
-{"ContentRoots":["D:\\backend\\ecommerce\\api\\wwwroot\\"],"Root":{"Children":null,"Asset":null,"Patterns":[{"ContentRootIndex":0,"Pattern":"**","Depth":0}]}}
+{"ContentRoots":["d:\\backend\\ecommerce\\api\\wwwroot\\"],"Root":{"Children":{"Templetes":{"Children":{"OtpTemplete.html":{"Children":null,"Asset":{"ContentRootIndex":0,"SubPath":"Templetes/OtpTemplete.html"},"Patterns":null}},"Asset":null,"Patterns":null}},"Asset":null,"Patterns":[{"ContentRootIndex":0,"Pattern":"**","Depth":0}]}}

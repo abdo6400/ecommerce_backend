@@ -1,15 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Dtos.SubCategory;
-using api.Interfaces;
-using api.Mappers;
-using api.Models;
-using api.Resources;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
 
 namespace api.Controllers
 {
@@ -30,6 +19,7 @@ namespace api.Controllers
         }
 
         [HttpGet]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         public async Task<ActionResult<List<SubCategoryDto>>> GetAll()
         {
             var subCategories = await _subCategoryRepository.GetAllAsync();
@@ -37,18 +27,20 @@ namespace api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [ApiExplorerSettings(GroupName = "v1-customer")]
         public async Task<ActionResult<SubCategoryDto>> GetSubCategoryById(int id)
         {
             var subCategory = await _subCategoryRepository.GetSubCategoryByIdAsync(id);
             if (subCategory == null)
             {
-                return NotFound(_localizer.GetString(AppStrings.subCategoryNotFound));
+                return NotFound(_localizer.GetString(AppStrings.subCategoryNotFound).Value);
             }
             return Ok(subCategory.ToSubCategoryDto());
         }
 
         [HttpPost]
-         [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         public async Task<ActionResult<SubCategoryDto>> CreateSubCategory([FromForm] SubCategoryCreateRequestDto subCategoryDto)
         {
             if (!ModelState.IsValid)
@@ -62,14 +54,15 @@ namespace api.Controllers
 
             if (createSubCategory == null)
             {
-                return BadRequest(_localizer.GetString(AppStrings.subCategoryNotCreated));
+                return BadRequest(_localizer.GetString(AppStrings.subCategoryNotCreated).Value);
             }
 
             return Ok(createSubCategory.ToSubCategoryDto());
         }
 
         [HttpPut("{id:int}")]
-         [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         public async Task<ActionResult<SubCategoryDto>> UpdateSubCategory(int id, [FromForm] SubCategoryUpdateRequestDto subCategoryDto)
         {
             if (!ModelState.IsValid)
@@ -83,20 +76,21 @@ namespace api.Controllers
 
             if (updatedSubCategory == null)
             {
-                return NotFound(_localizer.GetString(AppStrings.subCategoryNotFound));
+                return NotFound(_localizer.GetString(AppStrings.subCategoryNotFound).Value);
             }
 
             return Ok(updatedSubCategory.ToSubCategoryDto());
         }
 
         [HttpDelete("{id:int}")]
-         [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         public async Task<ActionResult<SubCategoryDto>> DeleteSubCategory(int id)
         {
             var subCategory = await _subCategoryRepository.DeleteSubCategoryAsync(id);
             if (subCategory == null)
             {
-                return NotFound(_localizer.GetString(AppStrings.subCategoryNotFound));
+                return NotFound(_localizer.GetString(AppStrings.subCategoryNotFound).Value);
             }
 
             _fileService.DeleteFile(subCategory.Image);
@@ -104,6 +98,7 @@ namespace api.Controllers
         }
 
         [HttpPost("bulk-create-subcategories")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         public async Task<ActionResult<List<SubCategoryDto>>> CreateSubCategories([FromBody] List<SubCategoryJsonCreateRequestDto> subCategoryDtos)
         {
             if (!ModelState.IsValid)
@@ -120,7 +115,7 @@ namespace api.Controllers
 
                 if (createSubCategory == null)
                 {
-                    return BadRequest(_localizer.GetString(AppStrings.subCategoryNotCreated));
+                    return BadRequest(_localizer.GetString(AppStrings.subCategoryNotCreated).Value);
                 }
 
                 subCategoryDtosList.Add(createSubCategory.ToSubCategoryDto());

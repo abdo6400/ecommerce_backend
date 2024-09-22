@@ -1,15 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Dtos.Category;
-using api.Interfaces;
-using api.Mappers;
-using api.Models;
-using api.Resources;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
 
 namespace api.Controllers
 {
@@ -23,6 +12,7 @@ namespace api.Controllers
         private readonly IStringLocalizer<CategoryController> _localizer = localizer;
 
         [HttpGet]
+        [ApiExplorerSettings(GroupName = "v1-customer")]
         public async Task<ActionResult<List<CategoryDto>>> GetAll()
         {
             var categories = await _categoryRepository.GetAllAsync();
@@ -30,18 +20,20 @@ namespace api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [ApiExplorerSettings(GroupName = "v1-customer")]
         public async Task<ActionResult<CategoryByIdDto>> GetCategoryById(int id)
         {
             var category = await _categoryRepository.GetCategoryByIdAsync(id);
             if (category == null)
             {
-                return NotFound(_localizer.GetString(AppStrings.categoryNotFound));
+                return NotFound(_localizer.GetString(AppStrings.categoryNotFound).Value);
             }
             return Ok(category.ToCategoryByIdDto());
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         public async Task<ActionResult<CategoryDto>> CreateCategory([FromForm] CategoryCreateRequestDto categoryDto)
         {
             if (!ModelState.IsValid)
@@ -55,7 +47,7 @@ namespace api.Controllers
 
             if (createCategory == null)
             {
-                return BadRequest(_localizer.GetString(AppStrings.categoryAlreadyExists));
+                return BadRequest(_localizer.GetString(AppStrings.categoryAlreadyExists).Value);
             }
 
             return Ok(createCategory.ToCategoryDto());
@@ -63,6 +55,7 @@ namespace api.Controllers
 
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Admin")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         public async Task<ActionResult<CategoryDto>> UpdateCategory(int id, [FromForm] CategoryUpdateRequestDto categoryDto)
         {
             if (!ModelState.IsValid)
@@ -76,7 +69,7 @@ namespace api.Controllers
 
             if (updatedCategory == null)
             {
-                return NotFound(_localizer.GetString(AppStrings.categoryNotFound));
+                return NotFound(_localizer.GetString(AppStrings.categoryNotFound).Value);
             }
 
             return Ok(updatedCategory.ToCategoryDto());
@@ -84,12 +77,13 @@ namespace api.Controllers
 
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Admin")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         public async Task<ActionResult<CategoryDto>> DeleteCategory(int id)
         {
             var category = await _categoryRepository.DeleteCategoryAsync(id);
             if (category == null)
             {
-                return NotFound(_localizer.GetString(AppStrings.categoryNotFound));
+                return NotFound(_localizer.GetString(AppStrings.categoryNotFound).Value);
             }
 
             _fileService.DeleteFile(category.Image);
@@ -98,6 +92,7 @@ namespace api.Controllers
 
         // Bulk Create
         [HttpPost("bulk-create")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
 
         public async Task<ActionResult<List<CategoryDto>>> CreateCategories([FromBody] List<CategoryJsonCreateRequestDto> categoryDtos)
         {
@@ -115,7 +110,7 @@ namespace api.Controllers
 
                 if (createCategory == null)
                 {
-                    return BadRequest(_localizer.GetString(AppStrings.categoryAlreadyExists));
+                    return BadRequest(_localizer.GetString(AppStrings.categoryAlreadyExists).Value);
                 }
 
                 categoryDtosList.Add(createCategory.ToCategoryDto());

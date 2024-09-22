@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using api.Interfaces;
-using Newtonsoft.Json;
 using Stripe.Checkout;
 
 namespace api.Services
@@ -13,7 +7,7 @@ namespace api.Services
         public async Task<string> CreatePaymentSession(Dictionary<string, string> data)
         {
             // Set your domain or base URL
-            var domain = "http://ama.runasp.net";
+            var domain = "https://ama.runasp.net";
             
             // Create the session options for Stripe Checkout
             var options = new SessionCreateOptions

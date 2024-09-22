@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using api.Interfaces;
-
 namespace api.Services
 {
     public class FileService : IFileService
@@ -12,13 +6,26 @@ namespace api.Services
 
         public FileService(IWebHostEnvironment env)
         {
-            _baseDirectory = Path.Combine(env.WebRootPath);
-            if (!Directory.Exists(_baseDirectory))
+            if (env != null)
             {
-                Directory.CreateDirectory(_baseDirectory);
+                _baseDirectory = env.WebRootPath;
+                if (!string.IsNullOrEmpty(_baseDirectory))
+                {
+                    _baseDirectory = env.ContentRootPath;
+
+                    if (!Directory.Exists(_baseDirectory))
+                    {
+                        Directory.CreateDirectory(_baseDirectory);
+                    }
+                    _baseDirectory = Path.Combine(_baseDirectory, "Resources");
+                }
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(env));
             }
         }
-        //images/categories/05e0d79b-e124-47ba-95ad-c108d1fe0328.jpg
+
         public bool DeleteFile(string filePath)
         {
             var imagePath = Path.Combine(_baseDirectory, filePath);
@@ -37,20 +44,21 @@ namespace api.Services
                 return string.Empty;
             }
 
-            // Generate a unique file name
-            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            var imagePathFolder = Path.Combine(_baseDirectory, folderName, fileName);
-            if (!Directory.Exists(imagePathFolder))
+            var directoryPath = Path.Combine(_baseDirectory, folderName);
+            if (!Directory.Exists(directoryPath))
             {
-                Directory.CreateDirectory(imagePathFolder);
+                Directory.CreateDirectory(directoryPath);
             }
 
-            var filePath = Path.Combine(imagePathFolder, uniqueFileName);
+            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(directoryPath, uniqueFileName);
 
+            // Ensure that no directory exists with the same path
             if (Directory.Exists(filePath))
             {
                 Directory.Delete(filePath, true);
             }
+
             // Save the file
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
@@ -58,7 +66,7 @@ namespace api.Services
             }
 
             // Return the relative path
-            return Path.Combine(folderName, fileName, uniqueFileName).Replace("\\", "/");
+            return Path.Combine(folderName, uniqueFileName).Replace("\\", "/");
         }
 
         public async Task<List<string>> SaveFilesAsync(List<IFormFile> files, string folderName, string subFolder, string fileName)
@@ -70,7 +78,6 @@ namespace api.Services
                 return savedFilePaths;
             }
 
-            // Ensure the target directory exists
             var directoryPath = Path.Combine(_baseDirectory, folderName, subFolder);
             if (!Directory.Exists(directoryPath))
             {
@@ -81,7 +88,6 @@ namespace api.Services
             {
                 if (file.Length > 0)
                 {
-                    // Generate a unique file name
                     var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     var filePath = Path.Combine(directoryPath, uniqueFileName);
 
@@ -98,24 +104,22 @@ namespace api.Services
 
             return savedFilePaths;
         }
+
         public async Task<string> SaveJsonToFileAsync(string jsonContent, string folderName, string fileName)
         {
-            // Ensure the target directory exists
             var directoryPath = Path.Combine(_baseDirectory, folderName);
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
             }
 
-            // Generate a unique file name with the .json extension
-            var uniqueFileName = fileName + ".json";
-            var filePath = Path.Combine(directoryPath, uniqueFileName);
+            var filePath = Path.Combine(directoryPath, fileName + ".json");
 
             // Write the JSON content to the file
             await File.WriteAllTextAsync(filePath, jsonContent);
 
             // Return the relative file path
-            return Path.Combine(folderName, uniqueFileName).Replace("\\", "/");
+            return Path.Combine(folderName, fileName + ".json").Replace("\\", "/");
         }
     }
 }

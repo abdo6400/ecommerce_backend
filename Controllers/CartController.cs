@@ -1,22 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using api.Dtos.Cart;
-using api.Interfaces;
-using api.Mappers;
-using api.Models;
-using api.Resources;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
 
 namespace api.Controllers
 {
     [ApiController]
     [Route("api/carts")]
     [Authorize(Roles = "User")]
+    [ApiExplorerSettings(GroupName = "v1-customer")]
     public class CartController(ICartRepository cartRepository, IStringLocalizer<CartController> localizer) : ControllerBase
     {
         private readonly ICartRepository _cartRepository = cartRepository;
@@ -43,7 +32,7 @@ namespace api.Controllers
 
             if (createdCart == null)
             {
-                return BadRequest(_localizer.GetString(AppStrings.cartNotCreated));
+                return BadRequest(_localizer.GetString(AppStrings.cartNotCreated).Value);
             }
 
             return Ok(createdCart.ToCartDto());
@@ -62,7 +51,7 @@ namespace api.Controllers
 
             if (updatedCart == null)
             {
-                return NotFound(_localizer.GetString(AppStrings.cartNotFound));
+                return NotFound(_localizer.GetString(AppStrings.cartNotFound).Value);
             }
 
             return Ok(updatedCart.ToCartDto());
@@ -75,7 +64,7 @@ namespace api.Controllers
 
             if (cart == null)
             {
-                return NotFound(_localizer.GetString(AppStrings.cartNotFound));
+                return NotFound(_localizer.GetString(AppStrings.cartNotFound).Value);
             }
 
             return Ok(cart.ToCartDto());

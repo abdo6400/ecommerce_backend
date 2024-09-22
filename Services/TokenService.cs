@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using api.Interfaces;
-using api.Models;
 using Microsoft.IdentityModel.Tokens;
 
 namespace api.Services
@@ -19,19 +13,21 @@ namespace api.Services
 
         public TokenService(IConfiguration config)
         {
-
             _config = config;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SiginKey"]!));
         }
-        public string CreateToken(AppUser user, string role )
+        public string CreateToken(BaseUser user, List<string> roles)
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-                new Claim(JwtRegisteredClaimNames.GivenName, user.UserName!),
-                new Claim(ClaimTypes.Role, role),
-                new Claim(ClaimTypes.NameIdentifier, user.Id!)
+                new(JwtRegisteredClaimNames.Email, user.Email!),
+                new(JwtRegisteredClaimNames.GivenName, user.UserName!),
+                new(ClaimTypes.NameIdentifier, user.Id!)
             };
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
@@ -50,7 +46,13 @@ namespace api.Services
             return tokenHandler.WriteToken(token);
         }
 
-
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
     }
 
 }

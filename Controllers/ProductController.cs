@@ -1,15 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using api.Dtos.Product;
-using api.Interfaces;
-using api.Mappers;
-using api.Models;
-using api.Resources;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
 
 namespace api.Controllers
 {
@@ -23,6 +12,7 @@ namespace api.Controllers
 
         // GET api/products/top-popular
         [HttpGet("top-popular")]
+        [ApiExplorerSettings(GroupName = "v1-customer")]
         public async Task<ActionResult<List<ProductDto>>> GetTopRatedProducts([FromQuery] int limit = 10)
         {
             var products = await _productRepository.GetTopProductsAsync(limit);
@@ -32,6 +22,7 @@ namespace api.Controllers
         // GET api/products/recommended
         [Authorize(Roles = "User")]
         [HttpGet("recommended")]
+        [ApiExplorerSettings(GroupName = "v1-customer")]
         public async Task<ActionResult<List<ProductDto>>> GetRecommendedProducts([FromQuery] int limit = 10)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -41,6 +32,7 @@ namespace api.Controllers
 
         // GET api/products/all
         [HttpGet("all")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         public async Task<ActionResult<List<ProductDto>>> GetAll()
         {
             var products = await _productRepository.GetAllAsync();
@@ -49,18 +41,20 @@ namespace api.Controllers
 
         // GET api/products/{id}
         [HttpGet("{id:int}")]
+        [ApiExplorerSettings(GroupName = "v1-customer")]
         public async Task<ActionResult<ProductByIdDto>> GetProductById(int id)
         {
             var product = await _productRepository.GetProductByIdAsync(id);
             if (product == null)
             {
-                return NotFound(_localizer.GetString(AppStrings.productNotFound));
+                return NotFound(_localizer.GetString(AppStrings.productNotFound).Value);
             }
             var relatedProducts = await _productRepository.GetRelatedProductsAsync(product.Id, product.Brand.SubCategoryId);
             return Ok(product.ToProductByIdDto(relatedProducts));
         }
 
         [Authorize(Roles = "Admin")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         [HttpPost]
         public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] ProductCreateRequestDto productDto)
         {
@@ -78,6 +72,7 @@ namespace api.Controllers
 
         // PUT api/products/{id}
         [Authorize(Roles = "Admin")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<ProductDto>> UpdateProduct(int id, [FromForm] ProductUpdateRequestDto productDto)
         {
@@ -91,7 +86,7 @@ namespace api.Controllers
 
             if (id != product.Id)
             {
-                return BadRequest(_localizer.GetString(AppStrings.idNotMatch));
+                return BadRequest(_localizer.GetString(AppStrings.idNotMatch).Value);
             }
 
             await _productRepository.UpdateProductAsync(product);
@@ -100,13 +95,14 @@ namespace api.Controllers
 
 
         [Authorize(Roles = "Admin")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _productRepository.DeleteProductAsync(id);
             if (product == null)
             {
-                return NotFound(_localizer.GetString(AppStrings.productNotFound));
+                return NotFound(_localizer.GetString(AppStrings.productNotFound).Value);
             }
 
             return NoContent();
@@ -114,6 +110,7 @@ namespace api.Controllers
 
         // POST api/products/bulk-create-products
         [HttpPost("bulk-create-products")]
+        [ApiExplorerSettings(GroupName = "v1-admin")]
         public async Task<ActionResult<List<ProductDto>>> BulkCreateProducts([FromBody] List<ProductJsonCreateRequestDto> productDtos)
         {
             if (!ModelState.IsValid)
@@ -130,7 +127,7 @@ namespace api.Controllers
 
                 if (createdProduct == null)
                 {
-                    return BadRequest(_localizer.GetString(AppStrings.productNotCreated));
+                    return BadRequest(_localizer.GetString(AppStrings.productNotCreated).Value);
                 }
 
                 productDtosList.Add(createdProduct.ToProductDto());

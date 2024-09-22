@@ -25,12 +25,11 @@ namespace api.Resources
 
         public const string wishlistNotFound = "wishlistNotFound";
         public const string failedToCreateWishlist = "failedToCreateWishlist";
+        
+        public const string addressNotCreated = "addressNotCreated";
+        public const string addressNotUpdated = "addressNotUpdated";
+        public const string  couponNotFound = "couponNotFound";
+        public const string  couponNotCreated = "couponNotCreated";
+        public const string  couponNotValid = "couponNotValid";
     }
 }
-
-/*
-"ConnectionStrings": {
-    "DefaultConnection": "Server=db7698.public.databaseasp.net; Database=db7698; User Id=db7698; Password=9b%M_Dg2m-4Q; Encrypt=True; TrustServerCertificate=True; MultipleActiveResultSets=True;"
-  }
-
-*/
